@@ -1,4 +1,3 @@
-import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
@@ -6,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:myblog/models/user.dart' as model;
 import 'package:myblog/service/storage_methods.dart';
+import 'package:myblog/widget/snackbar.dart';
 
 class AuthMethods {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -30,59 +30,76 @@ class AuthMethods {
     required Uint8List file,
   }) async {
     try {
-      if (username.isEmpty &&
+      if (username.isNotEmpty &&
           email.isNotEmpty &&
           password.isNotEmpty &&
-          confirm.isNotEmpty) {
-        if (password == confirm) {
-          UserCredential cred = await _auth.createUserWithEmailAndPassword(
-            email: email,
-            password: password,
-          );
-          String photoUrl = await StorageMethods()
-              .uploadImageToStorage('profilePics/${cred.user!.uid}/', file);
+          confirm.isNotEmpty &&
+          password == confirm) {
+        UserCredential cred = await _auth.createUserWithEmailAndPassword(
+          email: email,
+          password: password,
+        );
+        String photoUrl = await StorageMethods()
+            .uploadImageToStorage('profilePics/${cred.user!.uid}/', file);
 
-          model.User _user = model.User(
-            displayName: username,
-            nickname: "",
-            bio: "",
-            uid: cred.user!.uid,
-            photoURL: photoUrl,
-            email: email,
-            followers: [],
-            following: [],
-            likesPosts: [],
-          );
+        model.User _user = model.User(
+          displayName: username,
+          nickname: "",
+          bio: "",
+          uid: cred.user!.uid,
+          photoURL: photoUrl,
+          email: email,
+          followers: [],
+          following: [],
+          likesPosts: [],
+        );
 
-          await _firestore
-              .collection("users")
-              .doc(cred.user!.uid)
-              .set(_user.toJson());
-          // await sendEmailVerification();
-        } else {
-          Get.snackbar('', '',
-              backgroundColor: Colors.transparent,
-              titleText: AwesomeSnackbarContent(
-                  title: 'Error Creating Account',
-                  message: 'Password not match',
-                  contentType: ContentType.failure));
-        }
+        await _firestore
+            .collection("users")
+            .doc(cred.user!.uid)
+            .set(_user.toJson());
+        // await sendEmailVerification();
+      } else if (password != confirm) {
+        Get.snackbar('', '',
+            backgroundColor: Colors.transparent,
+            forwardAnimationCurve: Curves.decelerate,
+            duration: const Duration(milliseconds: 2500),
+            barBlur: 0,
+            overlayBlur: 0,
+            maxWidth: 600,
+            titleText: cSnackBar(
+              title: 'Account creation failed',
+              message: 'Password not match',
+              isErrorBanner: true,
+            ));
       } else {
         Get.snackbar('', '',
             backgroundColor: Colors.transparent,
-            titleText: AwesomeSnackbarContent(
-                title: 'Error Creating Account',
-                message: 'Please enter all the fields',
-                contentType: ContentType.failure));
+            forwardAnimationCurve: Curves.decelerate,
+            duration: const Duration(milliseconds: 2500),
+            barBlur: 0,
+            overlayBlur: 0,
+            maxWidth: 600,
+            titleText: cSnackBar(
+              title: 'Account creation failed',
+              message: 'Please enter all the fields',
+              isErrorBanner: true,
+            ));
       }
     } on FirebaseAuthException catch (e) {
-      //
+      print(e.message!);
       Get.snackbar('', '',
           backgroundColor: Colors.transparent,
-          titleText: AwesomeSnackbarContent(
-              title: 'Error Creating Account',
-              message: e.message!,
-              contentType: ContentType.failure));
+          forwardAnimationCurve: Curves.decelerate,
+          duration: const Duration(milliseconds: 2500),
+          barBlur: 0,
+          overlayBlur: 0,
+          maxWidth: 600,
+          titleText: cSnackBar(
+            title: 'Account creation failed',
+            message: e.message!,
+            isErrorBanner: true,
+          ));
     }
   }
 
@@ -97,22 +114,45 @@ class AuthMethods {
       if (email.isNotEmpty && password.isNotEmpty) {
         await _auth.signInWithEmailAndPassword(
             email: email, password: password);
+        Get.snackbar('', '',
+            backgroundColor: Colors.transparent,
+            forwardAnimationCurve: Curves.decelerate,
+            duration: const Duration(milliseconds: 2500),
+            barBlur: 0,
+            overlayBlur: 0,
+            maxWidth: 600,
+            titleText: cSnackBar(
+              title: 'Login Success',
+              message: 'Welcome back my friend',
+              isErrorBanner: false,
+            ));
       } else {
         Get.snackbar('', '',
-            snackPosition: SnackPosition.TOP,
             backgroundColor: Colors.transparent,
-            titleText: AwesomeSnackbarContent(
-                title: 'Error Login',
-                message: 'Please enter all the fields',
-                contentType: ContentType.failure));
+            forwardAnimationCurve: Curves.decelerate,
+            duration: const Duration(milliseconds: 2500),
+            barBlur: 0,
+            overlayBlur: 0,
+            maxWidth: 600,
+            titleText: cSnackBar(
+              title: 'Error Login',
+              message: 'Please enter all the fields',
+              isErrorBanner: true,
+            ));
       }
     } on FirebaseAuthException catch (e) {
       Get.snackbar('', '',
           backgroundColor: Colors.transparent,
-          titleText: AwesomeSnackbarContent(
-              title: 'Error Login',
-              message: e.message!,
-              contentType: ContentType.failure));
+          forwardAnimationCurve: Curves.decelerate,
+          duration: const Duration(milliseconds: 2500),
+          barBlur: 0,
+          overlayBlur: 0,
+          maxWidth: 600,
+          titleText: cSnackBar(
+            title: 'Error Login',
+            message: e.message!,
+            isErrorBanner: true,
+          ));
     }
   }
 

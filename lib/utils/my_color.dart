@@ -4,6 +4,10 @@ import 'package:get_storage/get_storage.dart';
 
 const likeColor = Color.fromARGB(255, 249, 24, 54);
 
+const errorColor = Color.fromARGB(255, 199, 44, 65);
+
+const successColor = Color.fromARGB(255, 12, 112, 64);
+
 const backgroundColor = Color.fromARGB(255, 24, 25, 26);
 
 const mainTextColor = Colors.white;

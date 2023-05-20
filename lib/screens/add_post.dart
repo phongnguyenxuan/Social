@@ -148,8 +148,7 @@ class _AddPostState extends State<AddPost> {
         constraints: BoxConstraints(
             maxWidth: size.width < webScreenSize ? size.width : size.width / 2),
         padding: const EdgeInsets.all(20),
-        decoration: BoxDecoration(
-            color: backgroundColor, borderRadius: BorderRadius.circular(10)),
+        color: backgroundColor,
         child: SingleChildScrollView(
           physics: const BouncingScrollPhysics(),
           child: Column(

@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:myblog/models/user.dart' as model;
 import 'package:myblog/screens/add_post.dart';
 import 'package:myblog/screens/home/home_screen.dart';
 import 'package:myblog/screens/profile/profile.dart';
@@ -52,6 +53,17 @@ class _ResponsiveLayoutState extends State<ResponsiveLayout> {
     final bool isMediumScreen = size.width > 800;
     final bool isLargeScreen = size.width > 1000;
     return Scaffold(
+      appBar: size.width > webScreenSize
+          ? AppBar(
+              backgroundColor: backgroundColor,
+              leading: const Padding(
+                padding: EdgeInsets.all(10.0),
+                child: FlutterLogo(
+                  size: 12,
+                ),
+              ),
+            )
+          : null,
       backgroundColor: backgroundColor,
       floatingActionButton: size.width < webScreenSize
           ? Container(
@@ -67,7 +79,7 @@ class _ResponsiveLayoutState extends State<ResponsiveLayout> {
                       context: context,
                       builder: (context) {
                         // ignore: prefer_const_constructors
-                        return Dialog(
+                        return Dialog.fullscreen(
                           child: const AddPost(),
                         );
                       });
@@ -86,13 +98,6 @@ class _ResponsiveLayoutState extends State<ResponsiveLayout> {
               ? Expanded(
                   flex: size.width <= 800 ? 1 : 2,
                   child: _slideBar(size, isMediumScreen, context),
-                )
-              : Container(),
-          size.width > webScreenSize
-              ? const VerticalDivider(
-                  thickness: 1,
-                  width: 1,
-                  color: Colors.white30,
                 )
               : Container(),
           Expanded(
@@ -150,17 +155,13 @@ class _ResponsiveLayoutState extends State<ResponsiveLayout> {
             ),
           ),
           isLargeScreen
-              ? const VerticalDivider(
-                  thickness: 1,
-                  width: 1,
-                  color: Colors.white30,
-                )
-              : Container(),
-          isLargeScreen
               ? Expanded(
                   flex: 2,
                   child: Container(
-                    color: backgroundColor,
+                    margin: const EdgeInsets.all(15),
+                    decoration: BoxDecoration(
+                        color: secondColor,
+                        borderRadius: BorderRadius.circular(15)),
                   ),
                 )
               : Container()
@@ -242,6 +243,7 @@ class _ResponsiveLayoutState extends State<ResponsiveLayout> {
 
             /// Likes
             BottomNavigationBarItem(
+              backgroundColor: backgroundColor,
               icon: Icon(
                 CupertinoIcons.search,
                 size: 20,
@@ -251,6 +253,7 @@ class _ResponsiveLayoutState extends State<ResponsiveLayout> {
 
             /// Search
             BottomNavigationBarItem(
+              backgroundColor: backgroundColor,
               icon: Icon(
                 CupertinoIcons.chat_bubble,
                 size: 20,
@@ -262,6 +265,7 @@ class _ResponsiveLayoutState extends State<ResponsiveLayout> {
               label: "Message",
             ),
             BottomNavigationBarItem(
+              backgroundColor: backgroundColor,
               icon: Icon(
                 CupertinoIcons.bell,
                 size: 20,
@@ -275,6 +279,7 @@ class _ResponsiveLayoutState extends State<ResponsiveLayout> {
 
             /// Profile
             BottomNavigationBarItem(
+              backgroundColor: backgroundColor,
               icon: Icon(
                 CupertinoIcons.person,
                 size: 20,
@@ -289,147 +294,155 @@ class _ResponsiveLayoutState extends State<ResponsiveLayout> {
     );
   }
 
-  Column _slideBar(Size size, bool isMediumScreen, BuildContext context) {
+  Widget _slideBar(Size size, bool isMediumScreen, BuildContext context) {
     return Column(
       children: [
-        Container(
-          height: 53,
-          width: size.width,
-          decoration: const BoxDecoration(
-              border: Border(bottom: BorderSide(color: Colors.white30))),
-          child: const Center(child: FlutterLogo()),
-        ),
         //slide bar
         Expanded(
-          child: SizedBox(
-            width: 200,
-            child: NavigationRail(
-                backgroundColor: backgroundColor,
-                groupAlignment: -1,
-                extended: isMediumScreen,
-                onDestinationSelected: (value) {
-                  setState(() {
-                    _currentIndex = value;
-                    if (home.currentState!.canPop()) {
-                      home.currentState!.pushAndRemoveUntil(
-                          PageTransition(
-                              type: PageTransitionType.fade,
-                              child: const HomeScreen(),
-                              duration: const Duration(microseconds: 0)),
-                          (route) => false);
-                    }
-                    if (search.currentState!.canPop()) {
-                      search.currentState!.pushAndRemoveUntil(
-                          PageTransition(
-                              type: PageTransitionType.fade,
-                              child: const Search(),
-                              duration: const Duration(microseconds: 0)),
-                          (route) => false);
-                    }
-                    if (message.currentState!.canPop()) {
-                      message.currentState!.pushAndRemoveUntil(
-                          PageTransition(
-                              type: PageTransitionType.fade,
-                              child: Container(),
-                              duration: const Duration(microseconds: 0)),
-                          (route) => false);
-                    }
-                    if (notification.currentState!.canPop()) {
-                      notification.currentState!.pushAndRemoveUntil(
-                          PageTransition(
-                              type: PageTransitionType.fade,
-                              child: Container(),
-                              duration: const Duration(microseconds: 0)),
-                          (route) => false);
-                    }
-                    if (profile.currentState!.canPop()) {
-                      profile.currentState!.pushAndRemoveUntil(
-                          PageTransition(
-                              type: PageTransitionType.fade,
-                              child: Profile(
-                                uid: FirebaseAuth.instance.currentUser!.uid,
-                              ),
-                              duration: const Duration(microseconds: 0)),
-                          (route) => false);
-                    }
-                  });
-                },
-                trailing: InkWell(
-                  highlightColor: Colors.transparent,
-                  splashColor: Colors.transparent,
-                  onTap: () {
-                    showDialog(
-                      context: context,
-                      builder: (context) => Dialog(
-                        backgroundColor: Colors.transparent,
-                        alignment: Alignment.center,
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12.0)),
-                        child: const AddPost(),
-                      ),
-                    );
-                  },
-                  child: Container(
-                    width: 150,
-                    height: 50,
-                    margin: const EdgeInsets.only(top: 16),
-                    decoration: BoxDecoration(
-                        color: blue, borderRadius: BorderRadius.circular(15)),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        const Icon(
-                          FontAwesomeIcons.plus,
-                          color: Colors.white,
-                          size: 20,
+          child: Stack(
+            alignment: Alignment.center,
+            children: [
+              Container(
+                margin: const EdgeInsets.all(15),
+                decoration: BoxDecoration(
+                    color: secondColor,
+                    borderRadius: BorderRadius.circular(15)),
+              ),
+              SizedBox(
+                width: 200,
+                height: 550,
+                child: NavigationRail(
+                    backgroundColor: Colors.transparent,
+                    groupAlignment: -1,
+                    extended: isMediumScreen,
+                    onDestinationSelected: (value) {
+                      setState(() {
+                        _currentIndex = value;
+                        if (home.currentState!.canPop()) {
+                          home.currentState!.pushAndRemoveUntil(
+                              PageTransition(
+                                  type: PageTransitionType.fade,
+                                  child: const HomeScreen(),
+                                  duration: const Duration(microseconds: 0)),
+                              (route) => false);
+                        }
+                        if (search.currentState!.canPop()) {
+                          search.currentState!.pushAndRemoveUntil(
+                              PageTransition(
+                                  type: PageTransitionType.fade,
+                                  child: const Search(),
+                                  duration: const Duration(microseconds: 0)),
+                              (route) => false);
+                        }
+                        if (message.currentState!.canPop()) {
+                          message.currentState!.pushAndRemoveUntil(
+                              PageTransition(
+                                  type: PageTransitionType.fade,
+                                  child: Container(),
+                                  duration: const Duration(microseconds: 0)),
+                              (route) => false);
+                        }
+                        if (notification.currentState!.canPop()) {
+                          notification.currentState!.pushAndRemoveUntil(
+                              PageTransition(
+                                  type: PageTransitionType.fade,
+                                  child: Container(),
+                                  duration: const Duration(microseconds: 0)),
+                              (route) => false);
+                        }
+                        if (profile.currentState!.canPop()) {
+                          profile.currentState!.pushAndRemoveUntil(
+                              PageTransition(
+                                  type: PageTransitionType.fade,
+                                  child: Profile(
+                                    uid: FirebaseAuth.instance.currentUser!.uid,
+                                  ),
+                                  duration: const Duration(microseconds: 0)),
+                              (route) => false);
+                        }
+                      });
+                    },
+                    trailing: InkWell(
+                      highlightColor: Colors.transparent,
+                      splashColor: Colors.transparent,
+                      onTap: () {
+                        showDialog(
+                          context: context,
+                          builder: (context) => Dialog(
+                            backgroundColor: Colors.transparent,
+                            alignment: Alignment.center,
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12.0)),
+                            child: const AddPost(),
+                          ),
+                        );
+                      },
+                      child: Container(
+                        width: 150,
+                        height: 50,
+                        margin: const EdgeInsets.only(top: 16),
+                        decoration: BoxDecoration(
+                            color: blue,
+                            borderRadius: BorderRadius.circular(15)),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            const Icon(
+                              FontAwesomeIcons.plus,
+                              color: Colors.white,
+                              size: 20,
+                            ),
+                            Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 8),
+                              child: Text('Add Posts', style: headerText),
+                            )
+                          ],
                         ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 8),
-                          child: Text('Add Posts', style: headerText),
-                        )
-                      ],
+                      ),
                     ),
-                  ),
-                ),
-                unselectedIconTheme:
-                    const IconThemeData(size: 25, color: mainTextColor),
-                unselectedLabelTextStyle:
-                    GoogleFonts.nunitoSans(color: mainTextColor, fontSize: 20),
-                selectedIconTheme: const IconThemeData(size: 25, color: blue),
-                selectedLabelTextStyle: GoogleFonts.nunitoSans(
-                  color: blue,
-                  fontSize: 22,
-                ),
-                destinations: const [
-                  NavigationRailDestination(
-                      icon: Icon(CupertinoIcons.house),
-                      selectedIcon: Icon(CupertinoIcons.house_fill),
-                      label: Text(
-                        'Home',
-                      )),
-                  NavigationRailDestination(
-                      icon: Icon(CupertinoIcons.search),
-                      selectedIcon: Icon(CupertinoIcons.search),
-                      label: Text('Search')),
-                  NavigationRailDestination(
-                      icon: Icon(CupertinoIcons.chat_bubble),
-                      selectedIcon: Icon(CupertinoIcons.chat_bubble_fill),
-                      label: Text('Message')),
-                  NavigationRailDestination(
-                      icon: Icon(CupertinoIcons.bell),
-                      selectedIcon: Icon(CupertinoIcons.bell_solid),
-                      label: Text('Notification')),
-                  NavigationRailDestination(
-                      icon: Icon(CupertinoIcons.person),
-                      selectedIcon: Icon(CupertinoIcons.person_solid),
-                      label: Text('Profile')),
-                  NavigationRailDestination(
-                      icon: Icon(CupertinoIcons.gear),
-                      selectedIcon: Icon(CupertinoIcons.gear_solid),
-                      label: Text('Settings')),
-                ],
-                selectedIndex: _currentIndex),
+                    unselectedIconTheme:
+                        const IconThemeData(size: 25, color: mainTextColor),
+                    unselectedLabelTextStyle: GoogleFonts.nunitoSans(
+                        color: mainTextColor, fontSize: 20),
+                    selectedIconTheme:
+                        const IconThemeData(size: 25, color: blue),
+                    selectedLabelTextStyle: GoogleFonts.nunitoSans(
+                      color: blue,
+                      fontSize: 22,
+                    ),
+                    destinations: const [
+                      NavigationRailDestination(
+                          icon: Icon(CupertinoIcons.house),
+                          selectedIcon: Icon(CupertinoIcons.house_fill),
+                          label: Text(
+                            'Home',
+                          )),
+                      NavigationRailDestination(
+                          icon: Icon(CupertinoIcons.search),
+                          selectedIcon: Icon(CupertinoIcons.search),
+                          label: Text('Search')),
+                      NavigationRailDestination(
+                          icon: Icon(CupertinoIcons.chat_bubble),
+                          selectedIcon: Icon(CupertinoIcons.chat_bubble_fill),
+                          label: Text('Message')),
+                      NavigationRailDestination(
+                          icon: Icon(CupertinoIcons.bell),
+                          selectedIcon: Icon(CupertinoIcons.bell_solid),
+                          label: Text('Notification')),
+                      NavigationRailDestination(
+                          icon: Icon(CupertinoIcons.person),
+                          selectedIcon: Icon(CupertinoIcons.person_solid),
+                          label: Text('Profile')),
+                      NavigationRailDestination(
+                          icon: Icon(CupertinoIcons.gear),
+                          selectedIcon: Icon(CupertinoIcons.gear_solid),
+                          label: Text('Settings')),
+                    ],
+                    selectedIndex: _currentIndex),
+              ),
+            ],
           ),
         ),
       ],

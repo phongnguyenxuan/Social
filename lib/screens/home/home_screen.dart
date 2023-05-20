@@ -39,13 +39,18 @@ class _HomeScreenState extends State<HomeScreen> {
           child: ContainedTabBarView(
               tabBarProperties: TabBarProperties(
                   indicatorColor: blue,
+                  indicatorSize: TabBarIndicatorSize.label,
+                  indicatorWeight: 4,
                   labelColor: blue,
                   labelStyle: headerText,
                   height: 53,
                   unselectedLabelColor: unselectedTextColor,
                   unselectedLabelStyle: headerText,
                   background: Container(
-                    color: backgroundColor,
+                    decoration: const BoxDecoration(
+                        color: backgroundColor,
+                        border:
+                            Border(bottom: BorderSide(color: Colors.white54))),
                   )),
               tabs: const [
                 Text(

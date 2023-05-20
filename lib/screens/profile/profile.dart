@@ -562,7 +562,7 @@ class _ProfileState extends State<Profile> {
               child: SizedBox(
                 width: size.width > webScreenSize ? 600 : size.width,
                 child: ListView.builder(
-                    shrinkWrap: true,
+                    shrinkWrap: false,
                     physics: const BouncingScrollPhysics(),
                     itemCount: listLikesPosts.length + 1,
                     itemBuilder: (context, index) {

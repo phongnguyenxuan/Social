@@ -71,7 +71,7 @@ class _PosterState extends State<Poster> {
           width: double.infinity,
           constraints: const BoxConstraints(maxHeight: double.infinity),
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(5),
+            borderRadius: BorderRadius.circular(15),
             color: secondColor,
           ),
           child: Column(

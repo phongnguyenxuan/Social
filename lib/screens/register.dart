@@ -1,4 +1,3 @@
-import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -65,20 +64,25 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   //
   void _registerUser() async {
-    try {
-      //loading
-      showDialog(
-          context: context,
-          builder: (context) {
-            return Center(child: Lottie.asset('assets/lotties/loading.json'));
-          });
-      await AuthMethods().signUpWithEmail(
-          username: usernameController.text,
-          email: emailController.text,
-          password: passwordController.text,
-          confirm: confirmPassController.text,
-          file: _file);
-    } on FirebaseAuthException catch (_) {}
+//    try {
+    //loading
+    showDialog(
+        context: context,
+        builder: (context) {
+          return Center(child: Lottie.asset('assets/lotties/loading.json'));
+        });
+    await AuthMethods().signUpWithEmail(
+        username: usernameController.text,
+        email: emailController.text,
+        password: passwordController.text,
+        confirm: confirmPassController.text,
+        file: _file);
+    // ignore: use_build_context_synchronously
+    if (Navigator.canPop(context)) {
+      // ignore: use_build_context_synchronously
+      Navigator.pop(context);
+    }
+    // } on FirebaseAuthException catch (_) {}
   }
 
   @override

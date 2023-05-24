@@ -67,7 +67,7 @@ class _FollowingScrState extends State<FollowingScr>
                                     ? 600
                                     : size.width,
                                 child: ListView.builder(
-                                    shrinkWrap: true,
+                                    shrinkWrap: false,
                                     physics: const BouncingScrollPhysics(),
                                     itemCount: listPost.length,
                                     itemBuilder: (context, index) {

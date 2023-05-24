@@ -54,7 +54,7 @@ class _ProfileState extends State<Profile> {
     var size = MediaQuery.of(context).size;
     final userLogin = FirebaseAuth.instance.currentUser!;
     var coverPhotoHeight = 200.0;
-    var photoHeight = 134.0;
+    var photoHeight = 120.0;
     return SafeArea(
       child: StreamBuilder<QuerySnapshot>(
         stream: userStream,
@@ -510,7 +510,6 @@ class _ProfileState extends State<Profile> {
               child: SizedBox(
                 width: size.width > webScreenSize ? 600 : size.width,
                 child: ListView.builder(
-                    shrinkWrap: true,
                     physics: const BouncingScrollPhysics(),
                     itemCount: listPost.length + 1,
                     itemBuilder: (context, index) {

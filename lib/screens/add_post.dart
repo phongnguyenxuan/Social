@@ -1,4 +1,3 @@
-import 'package:emoji_dialog_picker/emoji_dialog_picker.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
@@ -261,21 +260,6 @@ class _AddPostState extends State<AddPost> {
                                       color: Colors.white, fontSize: 15),
                                 ),
                                 const Spacer(),
-                                EmojiButton(
-                                  emojiPickerView: EmojiPickerView(
-                                      backgroundColor: backgroundColor,
-                                      onEmojiSelected: (String emoji) {
-                                        titleController.text += emoji;
-                                      }),
-                                  child: const Padding(
-                                    padding: EdgeInsets.all(5.0),
-                                    child: Icon(
-                                      FontAwesomeIcons.faceSmile,
-                                      color: Colors.yellowAccent,
-                                      size: 20,
-                                    ),
-                                  ),
-                                ),
                                 InkWell(
                                   onTap: () {
                                     _pickImage();

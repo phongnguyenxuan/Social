@@ -52,7 +52,6 @@ dependencies:
   get: ^4.6.5
   flutter_sticky_header: ^0.6.5
   expandable: ^5.0.1
-  emoji_dialog_picker: ^1.0.1
   timeago: ^3.3.0
   page_transition: ^2.0.9
   get_storage: ^2.1.1
